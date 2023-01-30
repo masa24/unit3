@@ -65,3 +65,9 @@ Screen:
             app.convert(141.22,'JPY')
             
 ```
+## image
+```.py
+![JPY](Screen Shot 2023-01-30 at 10.21.49.png)
+![USD](Screen Shot 2023-01-30 at 10.21.35.png)
+![error](Screen Shot 2023-01-30 at 10.19.15.png)
+```
