@@ -1,4 +1,5 @@
 # Task 1
+
 ## main file
 ```.py
 from kivymd.app import MDApp
@@ -39,7 +40,8 @@ Screen:
     MDLabel:
         id: output
         text: ''
-        pos_hint: {"x":.8, "y":-0.1}
+        font_size:'35pt'
+        pos_hint: {"x":.7, "y":-0.1}
 
     MDTextField:
         id: currency
