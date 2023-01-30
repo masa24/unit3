@@ -134,6 +134,10 @@ Screen:
 
 ```
 ## image
-![JPY](jpy.png)
-![USD](usd.png)
-![error](error.png)
+![JPY](error2.png)
+![JPY](kilo.png)
+![USD](mega.png)
+![error](giga.png)
+![JPY](tera.png)
+![USD](peta.png)
+![error](exa.png)
