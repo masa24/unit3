@@ -1,15 +1,134 @@
 # Example 1
 ## main file
 ```.py
-
+from kivymd.app import MDApp
+class ex1 (MDApp):
+    def build (self):
+        return
+test = ex1 ()
+test.run()
 ```
 ## kivy file
 ```.py
-
+Screen:
+    size: 500, 500
+    MDLabel:
+        text: "Hello World"
+        halign: "center"
+        font_size: "34pt"
 ```
-
 ![JPY](ex1.png)
 
+# Example 2
+## main file
+```.py
+from kivymd.app import MDApp
+
+class ex2 (MDApp):
+    def build (self):
+        return
+
+    def close(self):
+        exit()
+    
+test = ex2()
+test.run()
+```
+## kivy file
+```.py
+Screen:
+    size: 500, 500
+    MDBoxLayout:
+        pos_hint: {"center_x": 0.5}
+        size_hint: .7, .7
+        md_bg_color:"#fdfcdc"
+        orientation:"vertical"
+
+        MDLabel:
+            text: "Hello World"
+            halign: "center"
+            font_size: "34pt"
+
+        MDRaisedButton:
+            text: "Close"
+            size_hint: .5, 1
+            font_size: "34pt"
+            md_bg_color: "#f07167"
+            pos_hint: {"center_x": 0.5}
+            on_press:
+                app.close ()
+```
+![JPY](ex2.png)
+
+# Example 3
+## main file
+```.py
+from kivymd. app import MDApp
+class ex3 (MDApp):
+    def build(self):
+        return
+    def change_author(self, name):
+        self.root.ids.title.text = f"Author {name}"
+test = ex3()
+test.run()
+```
+## kivy file
+```.py
+Screen:
+    size: 500, 500
+    MDLabel:
+        id: title
+        font_style: "H1"
+        pos_hint: {"center_y":.8}
+        halign: "center"
+    MDBoxLayout:
+        pos_hint: {"center_x":0.5,"center_y": .5}
+        size_hint: .7, .2
+        orientation: "horizontal"
+        MDChip:
+            text: "Author A"
+            pos_hint: {"center_y": .5}
+            icon_right: "close-circle-outline"
+            md_bg_color: "#003049"
+            text_color: "#FFFFFF"
+            on_press:
+                app. change_author ("A")
+        MDChip:
+            text: "Author B"
+            pos_hint: {"center_y": .5}
+            icon_right: "close-circle-outline"
+            md_bg_color: "#D62828"
+            on_press:
+                app.change_author ("B")
+        MDChip:
+            text:"Author C"
+            pos_hint: {"center_y": .5}
+            icon_right: "close-circle-outline"
+            md_bg_color: "#F77F00"
+            on_press:
+                app.change_author ("C")
+        MDChip:
+            text: "Author D"
+            pos_hint: {"center_y": .5}
+            icon_right: "close-circle-outline"
+            md_bg_color: "#FCBF49"
+            on_press:
+                app.change_author ("D")
+        MDChip:
+            text: "Author E"
+            pos_hint: {"center_y": .5}
+            icon_right: "close-circle-outline"
+            md_bg_color: "#EAE287"
+            icon_left: "map-marker"
+            on_press:
+                app.change_author ("E")
+```
+![JPY](ex3.png)
+![JPY](ex3a.png)
+![JPY](ex3b.png)
+![JPY](ex3c.png)
+![JPY](ex3d.png)
+![JPY](ex3e.png)
 
 # Task 1
 
