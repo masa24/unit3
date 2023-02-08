@@ -228,8 +228,42 @@ class Classroom():
 ```
 ![solution to the quiz](quiz036.png)
 # 37
+## test code
+```.py
+class compoundinterest():
+    def __init__(self,principle,rate,year):
+        self.principle = principle
+        self.rate = rate
+        self.year = year
 
-![solution to the quiz](quiz040.png)
+class AccountingProgram:
+    def __init__(self):
+        self.compound = compoundinterest(0,0,0)
+    def set_principal(self,principal):
+        if principal <= 0:
+            raise ValueError("Principal should be greater than zero")
+        self.compound.principal = principal
+        return f"Principal set to {self.compound.principal}"
+
+    def set_rate(self,rate):
+        if rate <= 0:
+            raise ValueError("Interest rate should be greater than zero")
+        self.compound.rate = rate
+        return f"Rate set to {self.compound.rate}"
+
+    def set_years(self, year):
+        if year <= 0:
+            raise ValueError("Years should be greater than zero")
+        self.compound.year = year
+        return f"Year set to {self.compound.year}"
+
+    def calculate_interest(self):
+        temp = self.compound.principal*(1+self.compound.rate)**self.compound.year
+        format_float = "{:.2f}".format(temp)
+        return float(format_float)
+```
+
+![solution to the quiz](IMG_0141.JPG)
 # 38
 ```.py
 import random
