@@ -23,6 +23,7 @@ def mystery(list1,list2):
                 output.append(i)
     return (output)
 ```
+![solution to the quiz](quiz033.png)
 
 # 34
 ## main
@@ -63,7 +64,7 @@ class quiz034():
                     break
         return result
 ```
-
+![solution to the quiz](quiz034.png)
 
 
 # 35
@@ -132,7 +133,7 @@ class Account:
         return f"New balance: {self.balance} USD"
 
 ```
-
+![solution to the quiz](quiz035.png)
 
 # 36
 ```.py
@@ -225,6 +226,7 @@ class Classroom():
             total += student.get_grade()
         return total/len(self.students)
 ```
+![solution to the quiz](quiz036.png)
 # 37
 
 
@@ -287,6 +289,7 @@ for i in Japan.cities:
     plt.scatter(x,y)
 plt.show() 
 ```
+![solution to the quiz](quiz038.png)
 
 # 39
 ## kv file
@@ -335,6 +338,8 @@ class quiz039(MDApp):
 m = quiz039()
 m.run()
 ```
+![solution to the quiz](quiz039.png)
+
 # 40
 ## kv file
 ```.py
@@ -383,3 +388,4 @@ class Quiz040(MDApp):
 test = Quiz040()
 test.run()
 ```
+![solution to the quiz](quiz040.png)
