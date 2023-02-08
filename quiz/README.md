@@ -67,11 +67,164 @@ class quiz034():
 
 
 # 35
+## main
+```.py
+import pytest
+from test_quiz035 import Account
+
+def test_empty_account():
+    bk = Account(0,'','',[900,11324,5])
+    assert bk.balance == 0
+    assert bk.holder_name == ""
+    assert bk.holder_email == ""
+    assert isinstance(bk.number, list)
+    number = bk.get_account_no().split("-")
+    assert  len(number)==3 and len(number[0])==3 and len(number[1])==5 and len(number[2])==1
+
+def test_create_account():
+    bk = Account(0,'','',[900,11324,5])
+    assert bk.get_balance() == 0
+    assert bk.set_holder_name(name="Bob") == "Name set to Bob"
+    assert bk.set_holder_email(email="bob@company.xyz") == "Holder's email set to bob@company.xyz"
+    assert bk.deposit(amount=100) == "New balance: 100 USD"
+    assert bk.get_balance() == 100
+
+
+def test_value_errors():
+    bk = Account(0,'','',[900,11324,5])
+    with pytest.raises(ValueError):
+        bk.set_holder_email(email="bob@bob@bob")
+        bk.set_holder_name(name=["Bob"])
+        bk.set_holder_name(name=100)
+```
+## test code
+```.py
+class Account:
+    def __init__(self,balance,holder_name,holder_email,number):
+        self.balance = 0
+        self.holder_name = ''
+        self.holder_email = ''
+        self.number = [900,11324,5]
+
+    def get_account_no(self):
+        return f"{self.number[0]}-{self.number[1]}-{self.number[2]}"
+
+    def set_holder_name(self,name):
+        if not isinstance(name,str):
+            raise ValueError("Must be a string")
+        else:
+            self.holder_name = name
+        return f"Name set to {name}"
+
+    def set_holder_email(self, email: str) -> str:
+        if not isinstance(email, str):
+            raise ValueError("Email must be a string")
+
+        else:
+            self.holder_email = email
+        return f"Holder's email set to {email}"
+
+    def get_balance(self) -> int:
+        return self.balance
+
+    def deposit(self, amount: int) -> int:
+        self.balance += amount
+        return f"New balance: {self.balance} USD"
+
+```
 
 
 # 36
+```.py
+import pytest
+from test_quiz036 import Person,Student,Classroom
 
 
+
+def test_student():
+    student = Student("John", 20,90)
+    assert student.get_name() == "John"
+    assert student.get_age() == 20
+    assert student.get_grade() == 90
+    with pytest.raises(ValueError):
+        student = Student(123, 20,90)
+        student.get_name()
+
+def test_person():
+    person = Person("John", 20)
+    assert person.get_name() == "John"
+    assert person.get_age() == 20
+    with pytest.raises(ValueError):
+        person2 = Person(123, "John")
+        person2.get_name()
+        person2.get_age()
+
+def test_classroom():
+    classroom = Classroom()
+    student1 = Student("John", 20,90)
+    student2 = Student("Jane", 21,80)
+    student3 = Student("Jack", 22,70)
+    classroom.add_student(student1)
+    classroom.add_student(student2)
+    assert classroom.get_average_score() == (90+80)/2
+    classroom.remove_student(student1)
+    assert classroom.get_average_score() == 80
+    with pytest.raises(ValueError):
+        classroom.remove_student(student3)
+        classroom.get_average_score()
+    with pytest.raises(ValueError):
+        classroom.remove_student(student1)
+        classroom.remove_student(student2)
+        classroom.get_average_score()
+```
+## test code
+```.py
+class Person:
+    def __init__(self, name, age):
+        #print("Created Person")
+        self.name = name
+        self.age = age
+    def get_name(self):
+        if not isinstance(self.name, str):
+            raise ValueError("Name must be a string")
+        return self.name
+
+    def get_age(self):
+        if not isinstance(self.age, int):
+            raise ValueError("Age must be an integer")
+        return self.age
+
+
+class Student(Person):
+    def __init__(self,name,age,grade):
+        super().__init__(name,age)
+        #print("Created Student")
+        self.name = name
+        self.age = age
+        self.grade = grade
+    def get_grade(self):
+        return self.grade
+
+class Classroom():
+    def __init__(self):
+        self.students = []
+
+    def add_student(self,student:Student):
+        self.students.append(student)
+
+    def remove_student(self,student:Student):
+        if student not in self.students:
+            raise ValueError("Student not in classroom")
+        self.students.remove(student)
+
+    def get_average_score(self):
+        if len(self.students) == 0:
+            raise ValueError("Classroom is empty")
+        total = 0
+        for student in self.students:
+            total += student.get_grade()
+        return total/len(self.students)
+```
 # 37
 
 
