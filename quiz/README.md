@@ -229,7 +229,7 @@ class Classroom():
 ![solution to the quiz](quiz036.png)
 # 37
 
-
+![solution to the quiz](quiz040.png)
 # 38
 ```.py
 import random
