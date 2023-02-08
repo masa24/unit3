@@ -263,7 +263,7 @@ class AccountingProgram:
         return float(format_float)
 ```
 
-![solution to the quiz](IMG_0141.JPG)
+![solution to the quiz](quiz037.png)
 ![solution to the quiz](IMG_0141.JPG)
 # 38
 ```.py
