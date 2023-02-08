@@ -338,7 +338,10 @@ class quiz039(MDApp):
 m = quiz039()
 m.run()
 ```
-![solution to the quiz](quiz039.png)
+![solution to the quiz](quiz039a.png)
+![solution to the quiz](quiz039b.png)
+![solution to the quiz](quiz039c.png)
+![solution to the quiz](quiz039d.png)
 
 # 40
 ## kv file
@@ -388,4 +391,5 @@ class Quiz040(MDApp):
 test = Quiz040()
 test.run()
 ```
-![solution to the quiz](quiz040.png)
+![solution to the quiz](quiz040a.png)
+![solution to the quiz](quiz040b.png)
