@@ -264,6 +264,7 @@ class AccountingProgram:
 ```
 
 ![solution to the quiz](IMG_0141.JPG)
+![solution to the quiz](IMG_0141.JPG)
 # 38
 ```.py
 import random
