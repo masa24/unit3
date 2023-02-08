@@ -1,3 +1,16 @@
+# Example 1
+## main file
+```.py
+
+```
+## kivy file
+```.py
+
+```
+
+![JPY](ex1.png)
+
+
 # Task 1
 
 ## main file
