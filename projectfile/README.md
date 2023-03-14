@@ -3,7 +3,7 @@
 
 [^1]: "a person studying in a classroom on a table in the form of pixel art" by DALL E 2, Open AI, Accessed 7th March 2023
 
-# Unit 3 Project: Japanese Vocab Revision App
+# Unit 3 Project: Book App
 
 ## Criteria A: Planning
 
@@ -161,450 +161,726 @@ store the data for this application and how the relationships between table link
 
 #### Decomposition
 
-In computational thinking, decomposition refers to breaking a complex problem or system into parts that are easier to
-conceive, understand, program, and maintain. In this project, one key thing was the point system to store statistics and
-the user's performance in the database. As this require multiple steps, I broke down the whole action in the into
-collecting user and vocabulary information, calling back to another function inside the database handler and shifting to
-the next card in the GUI. Here's a snippet of the the function for adding points.
+Decomposition in computational thinking means breaking down complex problems into smaller parts for easier analysis and solution. It is a structured methodology that allows for identifying patterns, relationships, and dependencies. It is commonly used in software development but can be applied to various problem-solving situations.
 
 ##### Main Function
+```.py
+import sqlite3
+from kivymd.app import MDApp
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.icon_definitions import md_icons
+from kivy.properties import ObjectProperty
+#from kivymd.uix.combobox import MDComboBox
+from kivy.metrics import dp
 
-```python
-def add_points(self):
-    global count
-    global current_user
-    try:
-        # Collecting user information and id of the vocabulary
-        user_id = current_user.id
-        id = vocab_list[count][3]
-        # Calling back to the database handler to update the entry
-        VocabApp.db.update_user_stats(user_id, id, 1)
-        # Log the action
-        Logger.info("Points removed successfully")
-        # Shifting to the next vocabulary
-        count += 1
-        self.next_vocab()
-    except Exception as e:
-        # Error Catching
-        Logger.error(f"Error removing points: {e}")
-```
+from kivy.uix.scrollview import ScrollView
+from kivy.utils import get_color_from_hex
 
-##### Database Handler
+class database_handler:
 
-```python
-def update_user_stats(self, user_id, vocab_id, point_change):
-    # Queries database for entry specific to the user and the vocabulary
-    user_stats = self.session.query(UserStats).filter_by(user_id=user_id, vocabulary_id=vocab_id).first()
-    if user_stats is None:
-        # If none is found, a new entry is created automatically with base points of 100
-        new_user_stats = UserStats(user_id=user_id, vocabulary_id=vocab_id, points=100)
-        # Calculate new points according to the input into the function
-        new_user_stats.points += point_change
-        # Commit changes to the database
-        self.session.add(new_user_stats)
-        self.session.commit()
-    else:
-        # If existing entry is found, new points are calculated and committed to the database
-        user_stats.points += point_change
-        self.session.commit()
-    return None
-```
+    def __init__(self, namedb:str):
+        self.connection = sqlite3.connect(namedb)
+        self.cursor = self.connection.cursor()
 
-#### Pattern recognition, generalization and abstraction
+    def search(self,query):
+        result = self.cursor.execute(query).fetchall()
+        return result
 
-After a user hits the back button on a screen, the text fields on the previous screen still stays in the text fields. So
-the next time when the user opens that specific screen again, they would see that inputs from last time still there. To
-fix this problem, I implemented a function to clear out all text fields on one screen automatically. Here's the code:
+    def run_save(self,query):
+        self.cursor.execute(query)
+        self.connection.commit()
 
-```python
-def clear_fields(self):
-    self.ids.selected_lesson.text = ""
-    self.ids.selected_part.text = ""
-    self.ids.selected_hiragana.text = ""
-    self.ids.selected_katakana.text = ""
-    self.ids.selected_english.text = ""
-    self.ids.selected_save.text = "Save"
-    self.ids.selected_save.on_press = self.add_vocab
-```
+    def create_tables(self):
+        query1 = f"""CREATE TABLE if not exists users(
+            id INTEGER PRIMARY KEY,
+            email text NOT NULL unique,
+            password text NOT NULL
+        )"""
+        self.run_query(query1)
 
-As you can see this code is very repetitive. Thus I decided to use a for loop over a list to integrate over each text
-field until they're all empty.
+    def insert_1(self,email,password):
+        query = f'INSERT INTO users(email,password) values ("{email}","{password}")'
+        self.run_query(query)
+        self.close()
 
-```python
-  def clear_fields(self):
-    fields_to_clear = ['selected_lesson', 'selected_part', 'selected_hiragana', 'selected_katakana',
-                       'selected_english']
-    for field in fields_to_clear:
-        self.ids[field].text = ""
-    self.ids.selected_save.text = "Save"
-    self.ids.selected_save.on_press = self.add_vocab
-```
+    def insert_2(self,email,title,author,publisher,location):
+        query = f'INSERT INTO book_info(email,title,author,publisher,location) values ("{email}","{title}","{author}","{publisher}","{location}")'
+        self.run_query(query)
+        self.close()
 
-In the code above, instead of manually setting each field to an empty string, I'm using a loop to iterate through a list
-of field names and set each one to an empty string. This would make the code more concise and easier to modify if you
-ever need to add or remove fields.
+    def run_query(self,query:str):
+        self.cursor.execute(query)
+        self.connection.commit()
 
-#### Algorithms
+    def close(self):
+        self.connection.close()
 
-An algorithm is a step-by-step procedure for solving a problem or performing a task. One action requiring constant usage
-is the function for inserting vocabulary into the database. The function takes in several inputs (lesson, part,
-hiragana, katakana, and definition) and performs a series of steps to insert a new vocabulary into the database. The
-steps include checking if the vocabulary already exists in the database, creating a new Vocabulary object, adding it to
-the database session, and committing the changes. Here's a snippet of the code:
+class project(MDApp):
+    email = None
+    def build(self):
+        return
 
-```python
-  def insert_vocab(self, lesson, part, hiragana, katakana, definition):
-    # Queries database for if the vocabulary exist rather than first(), saves on time when table has multiple records
-    exists = self.session.query(Vocabulary).filter_by(hiragana=hiragana).exists()
-    # Checks if vocabulary exists already
-    if exists:
-        print("Vocab already exists")
-        return False
-    else:
-        # Create a new vocabulary object
-        new_vocab = Vocabulary(lesson=lesson, part_of_lesson=part, hiragana=hiragana, katakana=katakana,
-                               definition=definition)
-        self.session.add(new_vocab)
-        # Committing changes
-        self.session.commit()
-        print("Vocab added")
-        return None
-```
 
-## Development
+class LoginScreen(MDScreen):
+    def show_popup(self):
+        dialog = MDDialog(
+            title="Error:",
+            text="You have entered wrong email or password.",
+            buttons=[
+                MDFlatButton(
+                    text="Close", on_release=lambda *args: dialog.dismiss()
+                )
+            ],
+        )
+        dialog.open()
 
-### Object Oriented Programming
+    def try_login(self):
+        db = database_handler("BookApp.db")
+        email = self.ids.email.text
+        passwd = self.ids.passwd.text
+        query = f"SELECT * from users where email = '{email}' and password = '{passwd}'"
+        a = db.search(query)
+        print(a)
+        if len(a) > 0:
+            HomeScreen.email = email
+            self.parent.current = 'HomeScreen'
 
-Object Oriented Programming(OOP), is a programming paradigm that focuses on creating objects that can contain both data
-and behavior. In OOP, objects are instances of classes, which define the properties and methods that the objects will
-have. The main advantages of OOP include Modularity, Reliability, Encapsulation, Abstraction and Polymorphism. The whole
-vocabulary app is constructed using OOP to make it more simple to debug and for future developers to add/change
-features. Here's a snippet of how OOP was used to organize the code:
+        else:
+            self.show_popup()
+        db.close()
 
-```python
-class PerVocabManageScreen(MDScreen):
-    def __init__(self, **kwargs):
 
-    # Code omitted for demonstrative reasons
-    def on_pre_enter(self, *args):
+class SignupScreen(MDScreen):
+    def show_popup(self,error):
+        dialog = MDDialog(
+            title="Error:",
+            text= error,
+            buttons=[
+                MDFlatButton(
+                    text="Close", on_release=lambda *args: dialog.dismiss()
+                )
+            ],
+        )
+        dialog.open()
 
-    # Code omitted for demonstrative reasons
-    def add_vocab(self):
+    def password_require(self,password):
+        print('start')
+        password = str(password)
+        number = False
+        upper = False
+        length = False
+        for i in password:
+            if i.isdigit():
+                number = True
+            if i.isupper():
+                upper = True
+        if len(password) > 7:
+            length = True
+        print(number,upper,length)
+        if number == False or upper == False or length == False:
+            return 'invalid'
 
-    # Code omitted for demonstrative reasons
-    def clear_fields(self):
+    def try_register(self):
+        db = database_handler("BookApp.db")
+        email = self.ids.email.text
+        passwd = self.ids.passwd.text
+        passwd_confirm = self.ids.passwd_confirm.text
+        print(email,passwd,passwd_confirm)
+        query = f"SELECT * from users where email = '{email}'"
+        a = db.search(query)
+        message = ''
+        if len(email) < 1 or len(passwd) < 1:
+            message = 'Please enter email and password'
 
-    # Code omitted for demonstrative reasons
-    def save_changes(self):
-# Code omitted for demonstrative reasons 
-```
+        elif len(a) > 0:
+            message = 'This email adress is already been used'
 
-As seen above, each screen has its own class and each action is housed under a function so everything is very clear and
-easy-to-understand.
+        elif self.password_require(passwd) == 'invalid':
+            message = 'The passsword should be more than 8 character with number and uppercase letter in it'
 
-### ORM
+        elif passwd != passwd_confirm:
+            message = 'Password does not match'
 
-Object Relation Mapping(ORM), is a programming technique that allows developers to interact with a relational database
-using an object-oriented programming paradigm. In traditional programming with relational databases, developers use SQL
-statements to interact with the database. This involves writing SQL code to retrieve, update or delete records in the
-database. However, with ORM, developers can interact with the database using an object-oriented approach, which is more
-intuitive and easier to work with. ORM frameworks provide a layer of abstraction between the application and the
-database. They map database tables to classes in the application, and map columns to properties of those classes. This
-allows developers to work with objects in their code, rather than having to write SQL code to interact with the
-database. Here's a snippet of code to show the difference with and without ORM:
 
-```sql
-SELECT *
-FROM users
-WHERE username = "Bernard"
-```
+        if message != '':
+            self.show_popup(message)
+            message = ''
+        else:
+            db = database_handler('BookApp.db')
+            db.insert_1(email,passwd)
+            HomeScreen.email = email
 
-This is a normal SQL statement that can be executed in python through running a query with the sqlite3 library. This is
-a language with a low level of abstraction.
+            self.parent.current = 'HomeScreen'
+            print('register succesful')
 
-```python
-db.session.query(Users).filter_by(username="Bernard").first()
-```
 
-This is the same query done through ORM and a library called SQLAlchemy. SQLAlchemy is a popular open-source ORM
-framework for Python that provides a set of tools for working with relational databases using Python code. It was first
-released in 2006 and has since become a widely used tool in the Python community for interacting with databases.
-SQLAlchemy provides a high-level API for working with databases, allowing developers to interact with databases using
-Python classes and objects rather than SQL statements. Here's an example of how tables are created in SQLAlchemy with
-ORM:
+        db.close()
 
-```python
-class Vocabulary(Base):
-    __tablename__ = 'vocabulary'
-    id = Column(Integer, primary_key=True)
-    lesson = Column(Integer, nullable=False)
-    part_of_lesson = Column(Integer, nullable=False)
-    katakana = Column(String, nullable=False)
-    hiragana = Column(String, nullable=False)
-    definition = Column(String, nullable=False)
-    stats = relationship("UserStats", back_populates="vocabulary", order_by="UserStats.id")
-```
 
-### Code Organisation
+class HomeScreen(MDScreen):
+    email = None
 
-When dealing with a complex program, especially ones with a graphical user interfaces, it is a good practice to
-separate the front-end and back-end development. That can make finding code easier and let you be able to group
-frequently used functions together instead of writing repetitive code over and over which can make debugging a lot
-harder. In my program, I chose to separate my code into four parts : the KV file, the python program that interacts with
-the UI elements, a database handler and a models file to define the table structures.
+    def get_list(email):
+        db = database_handler("BookApp.db")
+        query = f"SELECT title,author,publisher,location from book_info where email = '{email}'"
+        a = db.search(query)
+        return a
 
-![](Assets/VocabApp_CodeStruct.jpg)
 
-**Fig.8**  *Diagram showing how code is organised in the app*
 
-As seen above, my code is separated into four parts. That makes debugging and changing features in the future easier and
-more straightforward.
+    def on_pre_enter(self):
+        data = HomeScreen.get_list(self.email)
+        self.current = self.email
+        print(self.email)
+        # before the screen is created, this code is run
+        self.data_table = MDDataTable(
+            size_hint=(.8, .65),
+            pos_hint={'center_x': .5, 'center_y': .4},
+            use_pagination=False,
+            pagination_menu_height=40,
+            check=False,
+            rows_num = 10,
+            # Title of the columns
+            column_data=[
+                         ("Title", 60),
+                         ("Author", 60),
+                         ("Publisher", 60),
+                         ("Location", 60),
+                         ],
+            row_data=data
 
-### Inserting Data
 
-Throughout the development process of the app, uncountable times of testing was done to make sure that the code
-functions as per my client's request and one of the main areas I tested was the database access. I had to constantly
-insert data into the database and try to interact with them inside the GUI. As the inserting of the same data was very
-time consuming and repetitive, I decided to write a small program in python which inserts dummy data into the database
-for testing. Here's the code:
+        )
+        self.add_widget(self.data_table)
 
-```python
-# create an engine and session
-engine = create_engine('sqlite:///vocab_app.db', echo=True)
-Session = sessionmaker(bind=engine)
-session = Session()
-# create some dummy data for the Vocabulary table
-dummy_data = [
-    {'lesson': 1, 'part_of_lesson': 1, 'katakana': 'ア', 'hiragana': 'あ', 'definition': 'a'},
-    {'lesson': 1, 'part_of_lesson': 2, 'katakana': 'イ', 'hiragana': 'い', 'definition': 'i'},
-    {'lesson': 1, 'part_of_lesson': 3, 'katakana': 'ウ', 'hiragana': 'う', 'definition': 'u'},
-    {'lesson': 1, 'part_of_lesson': 4, 'katakana': 'エ', 'hiragana': 'え', 'definition': 'e'},
-    {'lesson': 1, 'part_of_lesson': 5, 'katakana': 'オ', 'hiragana': 'お', 'definition': 'o'},
-]
-# insert the dummy data into the Vocabulary table
-for data in dummy_data:
-    vocab = Vocabulary(**data)
-    session.add(vocab)
-# commit the changes to the database
-session.commit()
+class AddScreen(MDScreen):
+    def overlap(self,email,title,author,publisher,location):
+        query = f"SELECT * from book_info where email = '{email}' and title = '{title}' and author = '{author}' and publisher = '{publisher}' and location = '{location}'"
+        db = database_handler("BookApp.db")
+        a = db.run_query(query)
+        print(f'result{a}')
 
-```
+    def update(self):
+        email = HomeScreen.email
+        title = self.ids.title.text
+        author = self.ids.author.text
+        publisher = self.ids.publisher.text
+        location = self.ids.location.text
+        self.overlap(email,title,author,publisher,location)
+        print(email,title,author,publisher)
+        db = database_handler('BookApp.db')
+        db.insert_2(email, title, author, publisher,location)
 
-### Point System
 
-One key feature that my client requested was a system to keep track of the learning progress of the user. After weighing
-multiple scoring/statistics systems, I decided to use a system where 100 is the base score per user per vocabulary and
-points are added/deducted based on the user's feedback on the Vocabulary Cards. To store this data, I created a table
-that has relations with the `users` table and the `vocabulary` table to make referencing easier and functions in
-the `database_handler` to change the score accordingly.
+class SearchScreen(MDScreen):
+    def search_list(self):
+        email = HomeScreen.email
+        title = self.ids.title.text
+        author = self.ids.author.text
+        publisher = self.ids.author.text
+        location = self.ids.location.text
+        search_result = []
+        db = database_handler("BookApp.db")
+        query = f"SELECT title,author,publisher,location from book_info where email = '{email}'"
+        a = db.search(query)
+        for i in a:
+            if i[0] == title or title == '':
+                if i[1] == author or author == '':
+                    if i[2] == publisher or publisher == '':
+                        if i[3] == location or location == '':
+                            search_result.append(i)
+        print(search_result)
+        self.show(search_result)
 
-#### Table Structure
+    def show(self,data):
+            self.ids.Searchbook.text = 'Result'
+            # before the screen is created, this code is run
+            self.data_table = MDDataTable(
+                size_hint=(.8, .7),
+                pos_hint={'center_x': .5, 'center_y': .49},
+                use_pagination=False,
+                pagination_menu_height=40,
+                #            check=True,
+                rows_num=10,
+                # Title of the columns
+                column_data=[
+                    ("Title", 60),
+                    ("Author", 60),
+                    ("Publisher", 60),
+                    ("Location", 60),
+                ],
+                row_data=data
 
-```python
-class UserStats(Base):
-    __tablename__ = 'user_stats'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    vocabulary_id = Column(Integer, ForeignKey('vocabulary.id'))
-    points = Column(Integer, nullable=False, default=100)
-    # One-to-many relationships with users
-    user = relationship("Users", back_populates="user_stats")
-    # One-to-many relationships with vocabulary
-    Users.user_stats = relationship("UserStats", order_by=id, back_populates="user")
-    # Many-to-one relationship with Vocabulary
-    vocabulary = relationship("Vocabulary", back_populates="stats")
-```
-
-#### Database Handler
-
-```python
-def update_user_stats(self, user_id, vocab_id, point_change):
-    user_stats = self.session.query(UserStats).filter_by(user_id=user_id, vocabulary_id=vocab_id).first()
-    print(f"User stats: {user_stats}")
-    if user_stats is None:
-        # Creates base statistics for entries that don't exist
-        new_user_stats = UserStats(user_id=user_id, vocabulary_id=vocab_id, points=100)
-        new_user_stats.points += point_change
-        self.session.add(new_user_stats)
-        self.session.commit()
-    else:
-        # Updates entry
-        user_stats.points += point_change
-        self.session.commit()
-    return None
-```
-
-### Randomized Vocabulary Mode
-
-Also according to my client's request is the ability for the application to choose the vocabulary that the user's is
-relatively weaker at for more revision. To achieve this, I built a function in `database_handler` to retrieve the user's
-statistics and order the vocabulary with the lowest points to show first.
-
-```python
-def get_vocab_by_user_stats(self, user_id):
-    # get all vocabs from user stats where user_id = user_id sort by points ascending
-    vocab = self.session.query(Vocabulary).join(UserStats).filter(UserStats.user_id == user_id).order_by(
-        UserStats.points).all()
-    return vocab
-```
-
-### MDTextField / JapaneseTextField
-
-```kv
-<JapaneseTextField@MDTextField>:
-    font_name: 'Japanese.ttc'
-    input_type: 'text'
-
-JapaneseTextField:
-            id: selected_hiragana
-            size_hint: .8,1
-            pos_hint: {"center_x":.5}
-            hint_text:"Hiragana"
-            helper_text: "Enter Hiragana of vocab"
-            helper_text_mode: "on_error"
-```
-
-Throughout the whole program,
-an essential element of the graphical user interface was to allow my client to input text into the program.
-This is an example of the text fields used to input Japanese into the app.
-Because KivyMD doesn't support Japanese characters, I had to use a specific font for the text field.
-As this would cause very repetitive code having to redefine the font file.
-I created a specific object  ```<JapaneseTextField@MDTextField>```
-that lets me define the font for the text field only once.
-
-### MDDialog
-
-```.kv
-successdialog = MDDialog(
-                title="Success",
-                text="User registered successfully",
-                size_hint=(0.8, 0.3),
-                buttons=[
-                    MDFlatButton(
-                        text="OK",
-                        on_release=lambda x: successdialog.dismiss()
-                    )
-                ]
             )
-            successdialog.open()
+            self.add_widget(self.data_table)
+
+
+class EditScreen(MDScreen):
+    def on_pre_enter(self):
+        self.data = HomeScreen.get_list(HomeScreen.email)
+        # before the screen is created, this code is run
+        self.data_table = MDDataTable(
+            size_hint=(.8, .65),
+            pos_hint={'center_x': .5, 'center_y': .4},
+            use_pagination=False,
+            pagination_menu_height=40,
+            check=True,
+            rows_num = 10,
+            # Title of the columns
+            column_data=[
+                         ("Title", 60),
+                         ("Author", 60),
+                         ("Publisher", 60),
+                         ("Location", 60),
+                         ],
+            row_data=self.data
+
+
+        )
+        self.add_widget(self.data_table)
+
+    def delete(self):
+        checked_rows = self.data_table.get_row_checks()
+        for r in checked_rows:
+            title = r[0]
+            author = r[1]
+            publisher = r[2]
+            location = r[3]
+            query = f"DELETE from book_info where title = '{title}' and author = '{author}' and publisher = '{publisher}' and location = '{location}'"
+            db = database_handler("BookApp.db")
+            db.run_query(query)
+            print(f'delete{r}')
+        db.close()
+        self.data = HomeScreen.get_list(HomeScreen.email)
+
+
+test = project()
+test.run()
+
 ```
+##### Kivy file
+```.py
+ScreenManager:
+    LoginScreen:
+        name: 'LoginScreen'
+    SignupScreen:
+        name: 'SignupScreen'
+    HomeScreen:
+        name: 'HomeScreen'
+    AddScreen:
+        name: 'AddScreen'
+    SearchScreen:
+        name: 'SearchScreen'
+    EditScreen:
+        name: 'EditScreen'
 
-This is an example of ```MDDialog``` used in my code to indicate to the user that an internal action was completed,
-because otherwise the program would be not intuitive as the user would have no way to tell if an action is completed
-properly. With the ```MDDialog``` implemented, the user is able get real-time feedback on if the program is performing
-an action under the hood.
+<LoginScreen>
+    MDScreen:
+        FitImage:
+            source: "library.jpeg"
+        MDCard:
+            size_hint:.85,.95
+            elevation: 2
+            orientation:'vertical'
+            pos_hint:{'center_x':.5,'center_y':.5}
+            color:0,90,0
 
-### Text Formatting in MDDataTable
+            MDBoxLayout:
+                size_hint:1,.2
 
-```python
-for row in rows:
-    temp_hiragana = f"[font=Japanese.ttc]{row.hiragana}[/font]"
-    temp_katakana = f"[font=Japanese.ttc]{row.katakana}[/font]"
-    row = [str(row.id), str(row.lesson), str(row.part_of_lesson), temp_hiragana, temp_katakana,
-           row.definition]
-    if row not in self.data_table.row_data:
-        self.data_table.row_data.append(row)
+                MDLabel:
+                    id:log
+                    pos_hint: {"center_y": .5}
+                    font_style:'H3'
+                    text:'Login'
+                    halign:'center'
+
+            MDBoxLayout:
+                orientation:"vertical"
+                size_hint:1,.4
+
+                MDTextField:
+                    id:email
+                    hint_text:'email'
+                    icon_left:'email'
+                    pos_hint:{"center_x": .5}
+                    size_hint_x:.8
+
+                MDTextField:
+                    id:passwd
+                    hint_text:'Password'
+                    icon_left:'key'
+                    password: True
+                    pos_hint:{"center_x": .5}
+                    size_hint_x:.8
+
+            MDBoxLayout:
+                orientation:"vertical"
+                size_hint:1,.4
+
+                MDLabel:
+                    text:""
+
+                MDRaisedButton:
+                    id:login
+                    text:'LOGIN'
+                    size_hint:.8,.5
+                    pos_hint:{"center_x": .5}
+                    on_press: root.try_login()
+
+                MDLabel:
+                    text:""
+
+                MDRectangleFlatIconButton:
+                    id:register
+                    text:'register'
+                    text_color: [0,0,0,1]
+                    line_color: (0, 0, 0, 0)
+                    size_hint:.8,.5
+                    pos_hint:{"center_x": .5}
+                    on_press: root.parent.current = "SignupScreen"
+
+
+                MDLabel:
+                    text:""
+
+
+<SignupScreen>
+    MDScreen:
+        FitImage:
+            source: "library.jpeg"
+        MDCard:
+            size_hint:.85,.95
+            elevation: 2
+            orientation:'vertical'
+            pos_hint:{'center_x':.5,'center_y':.5}
+            color:0,90,0
+
+            MDBoxLayout:
+                size_hint:1,.2
+
+                MDLabel:
+                    id:register
+                    pos_hint: {"center_y": .5}
+                    font_style:'H3'
+                    text:'Register'
+                    halign:'center'
+
+            MDBoxLayout:
+                orientation:"vertical"
+                size_hint:1,.4
+
+                MDTextField:
+                    id:email
+                    hint_text:'email'
+                    icon_left:'email'
+                    pos_hint:{"center_x": .5}
+                    size_hint_x:.8
+
+                MDTextField:
+                    id:passwd
+                    hint_text:'Password'
+                    icon_left:'key'
+                    password: True
+                    pos_hint:{"center_x": .5}
+                    size_hint_x:.8
+
+                MDTextField:
+                    id:passwd_confirm
+                    hint_text:'Confirm Password'
+                    icon_left:'key'
+                    password: True
+                    pos_hint:{"center_x": .5}
+                    size_hint_x:.8
+
+            MDBoxLayout:
+                orientation:"vertical"
+                size_hint:1,.4
+
+                MDLabel:
+                    text:""
+
+                MDRaisedButton:
+                    id:register
+                    text:'REGISTER'
+                    size_hint:.8,.5
+                    pos_hint:{"center_x": .5}
+                    on_press: root.try_register()
+
+                MDLabel:
+                    text:""
+
+                MDRectangleFlatIconButton:
+                    id:login_screen
+                    text:'Login'
+                    text_color: [0,0,0,1]
+                    line_color: (0, 0, 0, 0)
+                    size_hint:.2,.1
+                    pos_hint:{"center_x": .5}
+                    on_press: root.parent.current = "LoginScreen"
+
+                MDLabel:
+                    text:""
+
+<HomeScreen>
+    MDScreen:
+        FitImage:
+            source: "bg.jpeg"
+        MDLabel:
+            text: 'current user'
+
+    MDCard:
+        size_hint:.85,.95
+        elevation: 2
+        opacity:.7
+        pos_hint:{'center_x':.5,'center_y':.5}
+    MDRaisedButton:
+        id:add
+        opacity:10/7
+        size_hint:.2,.05
+        text:'Add a new book'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .925}
+        on_press: root.parent.current='AddScreen'
+
+    MDRaisedButton:
+        id:search
+        opacity:10/7
+        size_hint:.2,.05
+        text:'Search book'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .845}
+        on_press: root.parent.current='SearchScreen'
+
+    MDRaisedButton:
+        id:search
+        opacity:10/7
+        size_hint:.2,.05
+        text:'Edit list'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .765}
+        on_press: root.parent.current='EditScreen'
+
+    MDLabel:
+        id: test
+        opacity:10/7
+        text:'Home'
+        halign:'center'
+        pos_hint: {'center_x':.3,"center_y": .85}
+        font_size:150
+
+
+<AddScreen>
+    MDScreen:
+        FitImage:
+            source: "bg.jpeg"
+        MDLabel:
+            text: 'current user'
+
+    MDCard:
+        size_hint:.85,.95
+        elevation: 2
+        orientation:'vertical'
+        pos_hint:{'center_x':.5,'center_y':.5}
+        MDBoxLayout:
+            orientation:'vertical'
+            size_hint:1,1
+            MDLabel:
+                text:''
+            MDLabel:
+                text:''
+            MDLabel:
+                text:'Add a new book'
+                halign:'center'
+                font_size:'40sp'
+                size_hint_y:.1
+            MDLabel:
+                text:''
+            MDTextField:
+                id:title
+                hint_text:'Title'
+                icon_left:'book'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+            MDLabel:
+                text:''
+            MDTextField:
+                id:author
+                hint_text:'Author'
+                icon_left:'account'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+            MDLabel:
+                text:''
+            MDTextField:
+                id:publisher
+                hint_text:'Publisher'
+                icon_left:'note'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+            MDLabel:
+                text:''
+
+            MDTextField:
+                id:location
+                hint_text:'Location'
+                icon_left:'map-maker'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+
+            MDLabel:
+                text:''
+            MDLabel:
+                text:''
+
+            MDRaisedButton:
+                id:update
+                text:'UPDATE'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+                on_release: root.update()
+
+            MDLabel:
+                text:''
+
+            MDRaisedButton:
+                id:back_to_home
+                text:'Home'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+                on_release: root.parent.current = 'HomeScreen'
+            MDLabel:
+                text:''
+
+<SearchScreen>
+    MDScreen:
+        FitImage:
+            source: "bg.jpeg"
+        MDLabel:
+            text: 'current user'
+
+
+    MDCard:
+        size_hint:.85,.95
+        elevation: 2
+        orientation:'vertical'
+        pos_hint:{'center_x':.5,'center_y':.5}
+        MDBoxLayout:
+            orientation:'vertical'
+            size_hint:1,1
+            MDLabel:
+                text:''
+            MDLabel:
+                text:''
+            MDLabel:
+                id:Searchbook
+                text:'Search book'
+                halign:'center'
+                font_size:'40sp'
+                size_hint_y:.1
+            MDLabel:
+                text:''
+            MDTextField:
+                id:title
+                hint_text:'Title'
+                icon_left:'book'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+            MDLabel:
+                text:''
+            MDTextField:
+                id:author
+                hint_text:'Author'
+#                icon_left:'book'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+            MDLabel:
+                text:''
+            MDTextField:
+                id:publisher
+                hint_text:'Publisher'
+#                icon_left:'book'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+            MDLabel:
+                text:''
+
+            MDTextField:
+                id:location
+                hint_text:'Location'
+#                icon_left:'book'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+
+            MDLabel:
+                text:''
+            MDLabel:
+                text:''
+
+            MDRaisedButton:
+                id:search
+                text:'search'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+                on_release: root.search_list()
+
+            MDLabel:
+                text:''
+
+            MDRaisedButton:
+                id:back_to_home
+                text:'Home'
+                pos_hint:{"center_x": .5}
+                size_hint_x:.8
+                on_release: root.parent.current = 'HomeScreen'
+            MDLabel:
+                text:''
+
+<EditScreen>
+    MDScreen:
+        FitImage:
+            source: "bg.jpeg"
+        MDLabel:
+            text: 'current user'
+
+    MDCard:
+        size_hint:.85,.95
+        elevation: 2
+        opacity:.7
+        pos_hint:{'center_x':.5,'center_y':.5}
+
+    MDRaisedButton:
+        id:delete
+        opacity:10/7
+        size_hint:.2,.05
+        text:'Delete selected'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .925}
+        on_press: root.delete()
+
+    MDRaisedButton:
+        id:history
+        opacity:10/7
+        size_hint:.2,.05
+        text:'Edit History'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .845}
+#        on_press: root.parent.current='SearchScreen'
+
+    MDRaisedButton:
+        id:home
+        opacity:10/7
+        size_hint:.2,.05
+        text:'HOME'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .845}
+        on_press: root.parent.current='HomeScreen'
+
 ```
-
-Above is the code to process the Japanese characters from the database before they get shown on the ```MDDataTable```.
-This is because if a font that supports Japanese characters is applied,
-it wouldn't include the Kivy-specific icons and assets(e.g: checkboxes and page-turning buttons)
-needed to render the table.
-However,
-the Kivy-specific font that includes all the icons and assets required by Kivy would not support Japanese characters.
-Thus,
-I decided
-to format the Japanese text with specific headers and footers
-to tell Kivy to render the specific Japanese characters with that font.
-
-### Data Validation for email addresses
-
-To make sure the email addresses are actually usable and contactable, I decided to validate the email addresses format
-before inserting them into the database.
-To implement this policy, I decided to use the `re` library in python to
-validate if the user inputted a valid email address.
-I first defined the pattern which for an email,
-is `r"[^@]+@[^@]+\.[^@]+"`, I then used the `re.match()` function to check if the inputted text matches the previously
-defined format.
-If the pre-defined format is not matched, it would show an error and prompt the user to type in their
-email address again.
-Here's the code:
-
-```python
-# Regular expression pattern for email validation
-email_pattern = r"[^@]+@[^@]+\.[^@]+"
-
-# Validate the email format
-if not re.match(email_pattern, email):
-    # Show an error message
-    self.ids.email.error = True
-    self.ids.email.helper_text = "Invalid email format"
-    self.ids.email.helper_text_mode = "on_error"
-```
-
-### MDFillRoundFlatIconButton
-
-`MDFillRoundFlatIconButton` is one of the many buttons styles available in Kivy. I started out using `MDRaisedButton`
-for everything, but the further into the coding process, I realized that there are a lot more button styles that can
-make my application more intuitive. I'm using this type of button on my login screen.
-
-```kv
-MDFillRoundFlatIconButton:
-    id: login_button
-    text: "Login"
-    icon: "login"
-    pos_hint: {"center_x": 0.5}
-    on_release: root.login()
-    md_bg_color: app.theme_cls.primary_color
-    size_hint_x: 0.8
-    disabled: not uname.text or not pwd.text
-    disabled_color: app.theme_cls.disabled_hint_text_color
-    elevation_normal: 12 if uname.text and pwd.text else 0
-    _md_bg_color_disabled: app.theme_cls.disabled_hint_text_color
-    _md_bg_color_active: app.theme_cls.primary_light
-```
-
-As seen in the code above, the button is disabled if the `uname` or `pwd` input fields are empty, and its background
-color is set to the application's theme color for disabled text. When clicked, it calls the `login()` method of the
-widget's root object. The button has a shadow of 12 pixels when the `uname` and `pwd` input fields have text, and its
-background color changes to a lighter shade of the primary color defined in the application's theme when pressed.
-
-### MDFloatingActionButton
-
-`MDFloatingActionButton` is one of the other many button styles in KivyMD. This type of button includes an icon as its
-main focus. It can replace text with icons that represent self-explanatory functions, not to mention they are more
-intuitive and less graphic heavy on the GUI. Thus, I chose to use this button on the Home Screen of the application.
-Here's a snippet of code showing the logout button:
-
-```kv
-MDFloatingActionButton:
-  id: logout
-  icon: "logout"
-  text: "Logout"
-  halign:"right"
-  md_bg_color: app.theme_cls.accent_color
-  text_color: app.theme_cls.text_color
-  pos_hint: {"center_x": .5, "center_y": .5}
-  on_press:
-      root.logout()
-```
-
-### Color Theme
-
-As per my client's request, he requires a unified color theme to the whole application.
-To achieve this, instead of manually keeping track of which UI element uses which color,
-I defined a color scheme on the top of my Kivy file
-and just call back to this color theme every I need to refer to the colors.
-
-```kv
-# Define custom color scheme
-<CustomTheme>:
-    primary_palette: "Blue"
-    accent_palette: "Green"
-    theme_style: "Light"
-    primary_hue: "500"
-```
-
 # Criteria D: Functionality
 
 ## Demonstration Video
