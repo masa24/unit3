@@ -180,3 +180,51 @@ Screen:
         on_press:   app.function('br')
 
 ```
+# 42
+```.py
+from kivymd.app import MDApp
+from kivymd.uix.screen import MDScreen
+
+
+class MysteryA(MDScreen):
+    def messageA(self):
+        self.ids.textA.text = "This is mystery A. you pressed a button"
+
+class MysteryB(MDScreen):
+    def messageB(self):
+        pass
+
+class quiz042(MDApp):
+    def build(self):
+        return
+
+
+test = quiz042()
+test.run()
+```
+```.py
+ScreenManager:
+    MysteryA:
+        name: "MysteryA"
+    MysteryB:
+        name: "MysteryB"
+
+<MysteryA>:
+    MDLabel:
+        id: textA
+        text: "Welcome"
+        halign: "center"
+    MDRaisedButton:
+        text: "Click Me"
+        on_press: app.root.current = "MysteryB"
+        on_press: root.messageA()
+
+<MysteryB>:
+    MDLabel:
+        id: textB
+        text: "This is mystery pageB. You pressed a button"
+        halign: "center"
+    MDRaisedButton:
+        text: "Click Me"
+        on_press: app.root.current = "MysteryA"
+```
