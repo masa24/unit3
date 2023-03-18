@@ -288,3 +288,134 @@ accounts
 WHERE a_d = a_w
   AND a_d = accounts.account_id;
 ```
+# 46
+```.py
+import sqlite3
+
+haiku = """Code flows like a stream
+Algorithms guide its way
+In silence, it solves"""
+
+#Database Version
+class database_handler:
+    def __init__(self,dbname):
+        self.connection = sqlite3.connect(dbname)
+        self.cursor = self.connection.cursor()
+
+    def create_table(self):
+        query = f"""CREATE TABLE if not exists words(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word TEXT NOT NULL,
+            w_length INTEGER NOT NULL
+            )"""
+        self.run_query(query)
+
+    def avg(self):
+        query = f"""select avg(w_length) from words"""
+        self.run_query(query)
+        a = db.cursor.fetchone()
+        return a
+
+    def run_query(self, query):
+        self.cursor.execute(query)
+        self.connection.commit()
+
+    def close(self):
+        self.connection.close()
+
+db = database_handler("quiz046")
+db.create_table()
+
+
+for word in haiku.split():
+       query = f"""INSERT into words (word, w_length) VALUES('{word}', {len(word)})"""
+       db.run_query(query)
+
+
+result = db.avg()
+db.close()
+
+print(f'average word length is {result}')
+
+```
+# 47
+## update
+
+```.py
+def update(self):
+
+        #This function updates all the labels in the form using the base salary and the percentage
+        # Pseudocode
+        # 1- get the base salary from the GUI
+        base = self.root.ids.base.text
+        hash = ""
+        # 2- if base salary define total=int(base) and an empty string to store build a hash (for_hash="") if no base then end the function
+        test_field_ids = [ 'health', 'pension', 'income_tax','inhabitant']
+        if base !="":
+            total = int(base)
+            hash += f"base{total}"
+
+            for i in test_field_ids:
+                value = self.root.ids[i].text
+                if value !="":
+                    new_value=f"{int(value)*int(base)/100} JPY"
+                    total-= int(value)*int(base)/100
+                    hash+=f"{i}{value}"
+                else: new_value="JPY"
+                label_id=f"{i}_label"
+                self.root.ids[label_id].text= new_value
+
+            hash += f"total{int(total)}"
+            self.root.ids.salary_label.text = f"{total} JPY"
+            hashed = encrypt_pswd(hash)
+            self.hash = hashed
+            self.root.ids.hash.text = hashed[-50:]
+```
+
+## save
+
+```.py
+def save(self):
+        def save(self):
+            base_widget = self.root.ids.base
+            base = base_widget.text.strip()
+            values = {
+                "base": self.root.ids.base_label.text.strip()[:-4],
+                "inhabitant": self.root.ids.inhabitant_label.text.strip()[:-4],
+                "income_tax": self.root.ids.income_tax_label.text.strip()[:-4],
+                "pension": self.root.ids.pension_label.text.strip()[:-4],
+                "health": self.root.ids.health_label.text.strip()[:-4],
+                "salary": self.root.ids.salary_label.text.strip()[:-4],
+                "hash": self.hash,
+            }
+
+            query = "INSERT INTO payments (base, inhabitant, income_tax, pension, health, total, hash) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            db = database_worker("payments.db")
+            try:
+                db.cursor.execute(query, [values[key] for key in values.keys()])
+                db.connection.commit()
+                self.root.ids.hash_label.text = "Payment saved"
+            except Exception as e:
+                print(f"Error saving payment: {e}")
+            finally:
+                db.close()
+        self.root.ids.hash.text = f"Payment saved"
+
+```
+
+## checking hashed transactions (HL)
+
+```.py
+def check(self):
+        conn = sqlite3.connect('payments.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM payments")
+        rows=cursor.fetchall()
+
+        for row in rows:
+            get_hashed = encrypt_pswd(f"base{row[1]}inhabitant{row[2]}income_tax{row[3]}pension{row[4]}health{row[5]}total{row[6]}")
+            if get_hashed[-50:] == row[7]:
+                print("OK")
+            else:
+                print(f"Error in id: {row[0]}")
+```
