@@ -244,3 +244,17 @@ CREATE TABLE if not exists movie(
 INSERT INTO movie(name,producer,director,category,year,budget) values('Top Gun','Tom Cruise','Tony Scott','action drama',2022,15000000);
 INSERT INTO movie(name,producer,director,category,year,budget) values('Avatar','James Cameron','Jon Landau','action drama',2009,250000000);
 ```
+# 44
+```.py
+select name from sqlite_master where type = "table";
+
+select count(*) from INHABITANT where gender = "Male" and state = "Friendly";
+
+select avg(gold) from INHABITANT group by villageid;
+
+select count(*) from ITEM where item like "A%";
+
+select count(distinct job) from INHABITANT;
+
+select item from ITEM, INHABITANT where INHABITANT.personid = ITEM.owner and INHABITANT.job = "Herbalist";
+```
