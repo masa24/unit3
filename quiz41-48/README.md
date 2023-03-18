@@ -231,7 +231,7 @@ ScreenManager:
         on_press: app.root.current = "MysteryA"
 ```
 ![solution to the quiz](qiuz042a.png)
-![solution to the quiz](quiz041b.png)
+![solution to the quiz](quiz042b.png)
 ![solution to the quiz](quiz042c.png)
 # 43
 ```.py
@@ -300,6 +300,7 @@ WHERE a_d = a_w
 ```
 ![solution to the quiz](quiz045a.png)
 ![solution to the quiz](quiz045b.png)
+![solution to the quiz](quiz045diagram.png)
 # 46
 ```.py
 import sqlite3
