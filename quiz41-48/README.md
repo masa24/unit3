@@ -180,6 +180,8 @@ Screen:
         on_press:   app.function('br')
 
 ```
+![solution to the quiz](quiz041a.png)
+![solution to the quiz](quiz041b.png)
 # 42
 ```.py
 from kivymd.app import MDApp
@@ -228,7 +230,9 @@ ScreenManager:
         text: "Click Me"
         on_press: app.root.current = "MysteryA"
 ```
-
+![solution to the quiz](qiuz041a.png)
+![solution to the quiz](quiz041b.png)
+![solution to the quiz](quiz041c.png)
 # 43
 ```.py
 CREATE TABLE if not exists movie(
@@ -244,6 +248,7 @@ CREATE TABLE if not exists movie(
 INSERT INTO movie(name,producer,director,category,year,budget) values('Top Gun','Tom Cruise','Tony Scott','action drama',2022,15000000);
 INSERT INTO movie(name,producer,director,category,year,budget) values('Avatar','James Cameron','Jon Landau','action drama',2009,250000000);
 ```
+![solution to the quiz](quiz043.png)
 # 44
 ```.py
 select name from sqlite_master where type = "table";
@@ -258,6 +263,11 @@ select count(distinct job) from INHABITANT;
 
 select item from ITEM, INHABITANT where INHABITANT.personid = ITEM.owner and INHABITANT.job = "Herbalist";
 ```
+![solution to the quiz](quiz044a.png)
+![solution to the quiz](quiz044b.png)
+![solution to the quiz](quiz044c.png)
+![solution to the quiz](quiz044d.png)
+![solution to the quiz](quiz044e.png)
 # 45
 ```.py
 SELECT
@@ -288,6 +298,8 @@ accounts
 WHERE a_d = a_w
   AND a_d = accounts.account_id;
 ```
+![solution to the quiz](quiz045a.png)
+![solution to the quiz](quiz045b.png)
 # 46
 ```.py
 import sqlite3
@@ -338,6 +350,8 @@ db.close()
 print(f'average word length is {result}')
 
 ```
+
+![solution to the quiz](quiz046.png)
 # 47
 ## update
 
@@ -419,3 +433,5 @@ def check(self):
             else:
                 print(f"Error in id: {row[0]}")
 ```
+
+![solution to the quiz](quiz047.png)
