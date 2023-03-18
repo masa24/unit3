@@ -436,3 +436,47 @@ def check(self):
 ```
 
 ![solution to the quiz](quiz047.png)
+
+# 48
+```.py
+import sqlite3
+import hashlib
+#from secure_password import encrypt_pswd, check_pswd
+
+
+class database_worker:
+    def __init__(self, name):
+        self.connection = sqlite3.connect(name)
+        self.cursor = self.connection.cursor()
+
+    def search(self, query):
+        result = self.cursor.execute(query).fetchall()
+        return result
+
+    def run_save(self, query):
+        self.cursor.execute(query)
+        self.connection.commit()
+
+    def close(self):
+        self.connection.close()
+
+
+x = database_worker("bitcoin_exchange.db")
+
+query = """SELECT * from sqlite_master"""
+result = x.search(query)
+print(result)
+green = "\033[0;32m"
+red = "\33[0;31m"
+end_code = "\033[00m"
+
+for row in result:
+    unhashed = f"id {row[0]},sender_id {row[1]},receiver_id {row[2]},amount {row[3]}"
+    hashed= row[4]
+
+    if hash(unhashed) == hashed:
+        msg=f"{green}Tx({row[0]})Signature Matches{end_code}"
+    else:
+        msg=f"{red}Tx({row[0]})Error Signature{end_code}"
+    print(msg)
+```
