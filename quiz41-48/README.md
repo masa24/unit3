@@ -228,3 +228,19 @@ ScreenManager:
         text: "Click Me"
         on_press: app.root.current = "MysteryA"
 ```
+
+# 43
+```.py
+CREATE TABLE if not exists movie(
+    id INTEGER PRIMARY KEY,
+    name text,
+    producer text,
+    director text,
+    category text,
+    year int,
+    budget int
+);
+
+INSERT INTO movie(name,producer,director,category,year,budget) values('Top Gun','Tom Cruise','Tony Scott','action drama',2022,15000000);
+INSERT INTO movie(name,producer,director,category,year,budget) values('Avatar','James Cameron','Jon Landau','action drama',2009,250000000);
+```
