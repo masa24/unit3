@@ -230,9 +230,9 @@ ScreenManager:
         text: "Click Me"
         on_press: app.root.current = "MysteryA"
 ```
-![solution to the quiz](qiuz041a.png)
+![solution to the quiz](qiuz042a.png)
 ![solution to the quiz](quiz041b.png)
-![solution to the quiz](quiz041c.png)
+![solution to the quiz](quiz042c.png)
 # 43
 ```.py
 CREATE TABLE if not exists movie(
