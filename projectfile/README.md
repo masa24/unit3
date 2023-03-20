@@ -9,14 +9,14 @@
 
 ## Problem definition(Client identification)
 
-Gentaro is a student studying in a boarding school. He is a book worm and has a huge number of books. The issue that he
-is currently facing is that he cannot organize his book anymore. Therefor he is requesting a app that can organize your books.
-The unique part is that since Gentaro is a boarding school student, he needs a function that manage the location of the books.
+My client is a student studying in a boarding school. He is a book worm and has a huge number of books. The issue that he
+is currently facing is that he cannot organize his book anymore. He have tried many other app but none of them have met his need.
+As a boarding school student he needed a function that manages where his books are located. He wanted to know whethere the book is in his house or in school. There for he needed an app that has a function that could manage book info such as title,author,publisher and its current location.
 
 
 ## Proposed Solution
 
-Considering Gentaro's requirements, an adequate solution would include a localized computer program with a GUI(
+Considering my clients requirements, an adequate solution would include a localized computer program with a GUI(
 Graphical User Interface) that can store data into a database. Python would be an adequate programming language for the
 solution as it is open source, it is mature and supported in multiple platforms (platform-independent) including macOS,
 Windows, Linux.[^2]For the database, SQLite would be an adequate solution as it is an embedded, serverless relational
@@ -56,7 +56,7 @@ It will take approximately 1 month to complete and will be evaluated according t
 
 ![](Assets/VocabApp_SysDia2.jpeg)
 
-**Fig.1** *System diagram of the Japanese Vocab Revision App*
+System diagram
 
 ## Data Storage
 
@@ -149,19 +149,19 @@ store the data for this application and how the relationships between table link
 
 ## List of techniques used
 
-3. KivyMD Library
-4. For loops
-5. if statements
-6. Password Hashing
-7. Interacting with Databases
-8. Arrays and Lists
-9. Text Formatting
+1. For loops
+2. if statements
+3. Password Hashing
+4. Interacting with Databases
+5. Arrays and Lists
+6. Text Formatting
 
 ## Computational Thinking
 
 #### Decomposition
 
-Decomposition in computational thinking means breaking down complex problems into smaller parts for easier analysis and solution. It is a structured methodology that allows for identifying patterns, relationships, and dependencies. It is commonly used in software development but can be applied to various problem-solving situations.
+Decomposition in computational thinking means breaking down complex problems into smaller parts for easier analysis and solution. It is a structured methodology that allows for identifying patterns, relationships, and dependencies. It is commonly used in software development but can be applied to various problem-solving situations. In my project I applied this methods by breaking down my creation process bt every function. After creating each function I added all into the app. By using this method it was very easy to solve errors because you can easily find and solve it because the function 
+was independent.
 
 ##### Main Function
 ```.py
