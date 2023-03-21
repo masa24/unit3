@@ -153,8 +153,7 @@ store the data for this application and how the relationships between table link
 2. if statements
 3. Password Hashing
 4. Interacting with Databases
-5. Arrays and Lists
-6. Text Formatting
+5. Text Formatting
 
 ## Computational Thinking
 
@@ -164,22 +163,11 @@ Decomposition in computational thinking means breaking down complex problems int
 was independent.
 
 ##### Main Function
+
+###### database handler
+This is my database handler. There is a function called insert_1 and insert_2 in it.
+insert_1 is for adding in user information in the users table. insert_2 is for adding in the book information into book_info table.
 ```.py
-import sqlite3
-from kivymd.app import MDApp
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.icon_definitions import md_icons
-from kivy.properties import ObjectProperty
-#from kivymd.uix.combobox import MDComboBox
-from kivy.metrics import dp
-
-from kivy.uix.scrollview import ScrollView
-from kivy.utils import get_color_from_hex
-
 class database_handler:
 
     def __init__(self, namedb:str):
@@ -218,13 +206,10 @@ class database_handler:
 
     def close(self):
         self.connection.close()
-
-class project(MDApp):
-    email = None
-    def build(self):
-        return
-
-
+```
+##### Log in
+This is my Login Screen. This connects to the users database. The try_login function will will conduct the login process by checking if there is a pair of the correct email adress and password. If the inputs are wrong the show_popup function will show a error message using a popup.
+```.py
 class LoginScreen(MDScreen):
     def show_popup(self):
         dialog = MDDialog(
@@ -252,8 +237,16 @@ class LoginScreen(MDScreen):
         else:
             self.show_popup()
         db.close()
+```
+##### sign up
+This class manages the sign up function. It will add new user email and password in the users database with the try_register function.
+It asks for your email password and password confirmation. It has a input validation function and will show error message through the show_popup function. It shows different error message based on which step of error you are on. The steps are 
+1. You don't have any imput. 
+2. Your email is already used. 
+3. The password is not matching the requirments(validated by the password_require function). 
+4. If the password confirmation does not match the original one.
 
-
+```.py
 class SignupScreen(MDScreen):
     def show_popup(self,error):
         dialog = MDDialog(
@@ -319,19 +312,24 @@ class SignupScreen(MDScreen):
 
 
         db.close()
+```
 
-
+##### Home Screen
+```.py
 class HomeScreen(MDScreen):
     email = None
-
+```
+When login or register is successful it gives the current user email to the home screen.
+```.py
     def get_list(email):
         db = database_handler("BookApp.db")
         query = f"SELECT title,author,publisher,location from book_info where email = '{email}'"
         a = db.search(query)
         return a
 
-
-
+```
+This get_list function will get all information of the user owned book.
+```.py
     def on_pre_enter(self):
         data = HomeScreen.get_list(self.email)
         self.current = self.email
@@ -356,26 +354,26 @@ class HomeScreen(MDScreen):
 
         )
         self.add_widget(self.data_table)
+```
+on_pre_enter function creates a MDDataTable before the Screen is shown . The table will be showing all the information from the get_list function above.
 
+##### Add Screen
+In the adding screen user are allowed to add new books in the database 
+```.py
 class AddScreen(MDScreen):
-    def overlap(self,email,title,author,publisher,location):
-        query = f"SELECT * from book_info where email = '{email}' and title = '{title}' and author = '{author}' and publisher = '{publisher}' and location = '{location}'"
-        db = database_handler("BookApp.db")
-        a = db.run_query(query)
-        print(f'result{a}')
-
     def update(self):
         email = HomeScreen.email
         title = self.ids.title.text
         author = self.ids.author.text
         publisher = self.ids.publisher.text
         location = self.ids.location.text
-        self.overlap(email,title,author,publisher,location)
         print(email,title,author,publisher)
         db = database_handler('BookApp.db')
         db.insert_2(email, title, author, publisher,location)
 
-
+```
+##### search screen
+```.py
 class SearchScreen(MDScreen):
     def search_list(self):
         email = HomeScreen.email
@@ -395,7 +393,9 @@ class SearchScreen(MDScreen):
                             search_result.append(i)
         print(search_result)
         self.show(search_result)
-
+```
+By adding title == '' in the for loop allows users to leave a empty blank in the textbox.
+```.py
     def show(self,data):
             self.ids.Searchbook.text = 'Result'
             # before the screen is created, this code is run
@@ -417,8 +417,9 @@ class SearchScreen(MDScreen):
 
             )
             self.add_widget(self.data_table)
-
-
+```
+##### Edit Screen
+```.py
 class EditScreen(MDScreen):
     def on_pre_enter(self):
         self.data = HomeScreen.get_list(HomeScreen.email)
@@ -442,7 +443,9 @@ class EditScreen(MDScreen):
 
         )
         self.add_widget(self.data_table)
-
+```
+This function shows the table that was used in the homescreen but with a check box.
+```.py
     def delete(self):
         checked_rows = self.data_table.get_row_checks()
         for r in checked_rows:
@@ -456,7 +459,41 @@ class EditScreen(MDScreen):
             print(f'delete{r}')
         db.close()
         self.data = HomeScreen.get_list(HomeScreen.email)
+```
+##### History Screen
+```.py
+class HistoryScreen(MDScreen):
+    def get_list(self,email):
+        db = database_handler("BookApp.db")
+        query = f"SELECT id,title,action,date from history where email = '{email}'"
+        a = db.search(query)
+        db.close()
+        return a
+```
+This code gets the list of action from the history table.
+```.py
+    def on_pre_enter(self):
+        data = self.get_list(HomeScreen.email)
+        # before the screen is created, this code is run
+        self.data_table = MDDataTable(
+            size_hint=(.8, .65),
+            pos_hint={'center_x': .5, 'center_y': .4},
+            use_pagination=False,
+            pagination_menu_height=40,
+            check=False,
+            rows_num = 10,
+            # Title of the columns
+            column_data=[
+                         ("ID", 25),
+                         ("title", 60),
+                         ("action", 60),
+                         ("date", 100)
+                         ],
+            row_data=data
 
+
+        )
+        self.add_widget(self.data_table)
 
 test = project()
 test.run()
@@ -477,6 +514,8 @@ ScreenManager:
         name: 'SearchScreen'
     EditScreen:
         name: 'EditScreen'
+    HistoryScreen:
+        name: 'HistoryScreen'
 
 <LoginScreen>
     MDScreen:
@@ -630,8 +669,6 @@ ScreenManager:
     MDScreen:
         FitImage:
             source: "bg.jpeg"
-        MDLabel:
-            text: 'current user'
 
     MDCard:
         size_hint:.85,.95
@@ -678,8 +715,7 @@ ScreenManager:
     MDScreen:
         FitImage:
             source: "bg.jpeg"
-        MDLabel:
-            text: 'current user'
+
 
     MDCard:
         size_hint:.85,.95
@@ -728,7 +764,7 @@ ScreenManager:
             MDTextField:
                 id:location
                 hint_text:'Location'
-                icon_left:'map-maker'
+                icon_left:'map-marker-radius'
                 pos_hint:{"center_x": .5}
                 size_hint_x:.8
 
@@ -760,8 +796,6 @@ ScreenManager:
     MDScreen:
         FitImage:
             source: "bg.jpeg"
-        MDLabel:
-            text: 'current user'
 
 
     MDCard:
@@ -795,7 +829,7 @@ ScreenManager:
             MDTextField:
                 id:author
                 hint_text:'Author'
-#                icon_left:'book'
+                icon_left:'account'
                 pos_hint:{"center_x": .5}
                 size_hint_x:.8
             MDLabel:
@@ -803,7 +837,7 @@ ScreenManager:
             MDTextField:
                 id:publisher
                 hint_text:'Publisher'
-#                icon_left:'book'
+                icon_left:'note'
                 pos_hint:{"center_x": .5}
                 size_hint_x:.8
             MDLabel:
@@ -812,7 +846,7 @@ ScreenManager:
             MDTextField:
                 id:location
                 hint_text:'Location'
-#                icon_left:'book'
+                icon_left:'map-marker-radius'
                 pos_hint:{"center_x": .5}
                 size_hint_x:.8
 
@@ -844,14 +878,20 @@ ScreenManager:
     MDScreen:
         FitImage:
             source: "bg.jpeg"
-        MDLabel:
-            text: 'current user'
 
     MDCard:
         size_hint:.85,.95
         elevation: 2
         opacity:.7
         pos_hint:{'center_x':.5,'center_y':.5}
+
+    MDLabel:
+        id: test
+        opacity:10/7
+        text:'Edit'
+        halign:'center'
+        pos_hint: {'center_x':.3,"center_y": .85}
+        font_size:150
 
     MDRaisedButton:
         id:delete
@@ -869,7 +909,7 @@ ScreenManager:
         text:'Edit History'
         md_bg_color:.6,.3,0
         pos_hint: {"center_x": 0.7, "center_y": .845}
-#        on_press: root.parent.current='SearchScreen'
+        on_press: root.parent.current='HistoryScreen'
 
     MDRaisedButton:
         id:home
@@ -877,9 +917,29 @@ ScreenManager:
         size_hint:.2,.05
         text:'HOME'
         md_bg_color:.6,.3,0
-        pos_hint: {"center_x": 0.7, "center_y": .845}
+        pos_hint: {"center_x": 0.7, "center_y": .765}
         on_press: root.parent.current='HomeScreen'
 
+
+<HistoryScreen>
+    MDScreen:
+        FitImage:
+            source: "bg.jpeg"
+
+    MDCard:
+        size_hint:.85,.95
+        elevation: 2
+        opacity:.7
+        pos_hint:{'center_x':.5,'center_y':.5}
+
+    MDRaisedButton:
+        id:home
+        opacity:10/7
+        size_hint:.2,.05
+        text:'HOME'
+        md_bg_color:.6,.3,0
+        pos_hint: {"center_x": 0.7, "center_y": .925}
+        on_press: root.parent.current='HomeScreen'
 ```
 # Criteria D: Functionality
 
