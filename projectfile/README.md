@@ -54,28 +54,27 @@ It will take approximately 1 month to complete and will be evaluated according t
 
 ## System Diagram
 
-![](Assets/VocabApp_SysDia2.jpeg)
+![](system.png)
 
 System diagram
 
 ## Data Storage
 
-![](Assets/VocabApp_ER.jpeg)
+![](ER.png)
 
-**Fig.2** *ER diagram of the Japanese Vocab Revision App Database*. This diagram depicts the database structure used to
-store the data for this application and how the relationships between table link up the database.
+ER diagram
 
 ## UML Diagram
 
-![](Assets/VocabApp_UML.jpeg)
+![](uml.png)
 
-**Fig.3** *UML Diagram of the Japanese Vocab Revision App*. This diagram depicts the classes of the application.
+UML Diagram
 
 ## Wireframe
 
-![](Assets/VocabApp_Wireframe.jpeg)
+![](wireframe.png)
 
-**Fig.4** *Wireframe of the Japanese Vocab Revision App*
+Wireframe
 
 ## Record of Tasks
 
@@ -945,7 +944,7 @@ ScreenManager:
 
 ## Demonstration Video
 
-[Click here for the Video](https://drive.google.com/file/d/1itqrEy7QBwmW7Ril9mgh4pWVQhMVW6aM/view?usp=share_link)
+[Click here for the Video](https://drive.google.com/file/d/1ahuo32lU8IKWVdopnoYAEPIMCa0DNHtE/view?usp=sharing)
 
 # Appendix
 
