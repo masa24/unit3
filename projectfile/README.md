@@ -60,7 +60,7 @@ System diagram
 
 ## Data Storage
 
-![](ER.png)
+![](er.png)
 
 ER diagram
 
