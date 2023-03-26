@@ -107,23 +107,20 @@ Wireframe
 
 ## Flow Diagrams
 
-#### Password Authentication
+#### Login
+![](login.jpg)
 
-![](Assets/VocabApp_PasswordAuthFlow.jpg)
+#### Register
 
-**Fig.5** *Flow diagram of a Password Authentication system*
+![](register.jpg)
 
-#### Vocab Cards & Point System
+#### Add
 
-![](Assets/VocabApp_PointsFlow.jpg)
+![](add.jpg)
 
-**Fig.6** *Flow diagram of Point System*
+#### Delete
 
-#### Vocab Entry Editing
-
-![](Assets/VocabApp_EditFlow.jpg)
-
-**Fig.7** *Flow diagram of Vocab Editing function*
+![](delete.jpg)
 
 ## Test Plan
 
