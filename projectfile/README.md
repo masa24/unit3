@@ -108,19 +108,19 @@ Wireframe
 ## Flow Diagrams
 
 #### Login
-![](login.jpg)
+![](login.png)
 
 #### Register
 
-![](register.jpg)
+![](register.png)
 
 #### Add
 
-![](add.jpg)
+![](add.png)
 
 #### Delete
 
-![](delete.jpg)
+![](delete.png)
 
 ## Test Plan
 
