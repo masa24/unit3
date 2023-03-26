@@ -1,8 +1,3 @@
-
-![](Assets/DALLE.png)[^1]
-
-[^1]: "a person studying in a classroom on a table in the form of pixel art" by DALL E 2, Open AI, Accessed 7th March 2023
-
 # Unit 3 Project: Book App
 
 ## Criteria A: Planning
@@ -92,18 +87,17 @@ Wireframe
 | 13      | Create SearchScreen                         | Create the SearchScreeen                                                  | 40 min        | Mar 4                  | C         |
 | 14      | Coding the search function                               | Create function to Search function.                                                                  | 5 min         | Mar 4                  | C         |
 | | | |
-| 23      | Creating System Diagram                                  | To have system diagram finished                                                                                                    | 30 min        | Mar 3                  | B         |
-| 24      | Creating UML Diagram                                     | To have the UML diagram finished                                                                                                   | 30 min        | Mar 3                  | B         |
-| 25      | Creating ER Diagram                                      | To have the ER diagram finished                                                                                                    | 30 min        | Mar 3                  | B         |
-| 26      | Creating Flow Diagrams                                   | To have the  flow diagrams finished                                                                                                | 30 min        | Mar 3                  | B         |
-| | | |
+| 23      | Creating System Diagram                                  | To have system diagram finished                                                                                                    | 30 min        | Mar 24                  | B         |
+| 24      | Creating UML Diagram                                     | To have the UML diagram finished                                                                                                   | 30 min        | Mar 24                  | B         |
+| 25      | Creating ER Diagram                                      | To have the ER diagram finished                                                                                                    | 30 min        | Mar 24                  | B         |
+| 26      | Creating Flow Diagrams                                   | To have the  flow diagrams finished                                                                                                | 30 min        | Mar 24                  | B         |
 | 27      | Completing Development Part of Criteria C                | To have interesting parts of my code documented properly                                                                           | 2 hr          | Mar 3                  | C         |
 | 28      | Coding: Beautifying Graphical User Interface             | To make the interface more user-friendly and easily understandable                                                                 | 2 hr          | Mar 3                  | C         |
 | 29      | Filling Computational Thinking                           | To have the Computational Thinking part of Criteria C of the README file finished                                                  | 1 hr          | Mar 6                  | C         |
 | 30      | Creating Test Plan                                       | To have a test plan created for confirming if the application works to standard                                                    | 1.5 hr        | Mar 7                  | C         |
 | 31      | Consolidating and commenting code                        | To have the code finalized and organized for easy-understanding                                                                    | 1 hr          | Mar 7                  | C         |
 | 32      | Beautifying README file                                  | To have README file consolidated and completed                                                                                     | 20 min        | Mar 7                  | B         |
-| 33      | Finish video for Criteria D                              | Video evidence of all the success criteria functioning and working within the developed application                               | 10 min        | Mar 7                  | D         |
+| 33      | Finish video for Criteria D                              | Video evidence of all the success criteria functioning and working within the developed application                               | 10 min        | Mar 24                  | D         |
 
 ## Flow Diagrams
 
@@ -127,10 +121,11 @@ Wireframe
 | Type                | Description                 | Process                                                                                                                                                                                                                                                                                      | Anticipated Outcome                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 |---------------------|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Unit Testing        | Registration           | 1. Run main.py file <br />2. Click the Register button on the application screen <br />3. Input the appropriate information in each textfield following the hint text<br /> 4. Click Register                                                                                         | when the button is pressed error code is created depending on what stage is the correctness of userinput are. The error is prioritized in the order of overlapping email, not matching the password requirements and the mismatch of password confirmation.|
-| Unit Testing        | Login                  | 1. Run main.py file <br />2. Input the appropriate information in each textfield following the hint text <br />3. Click Login                                                                                                                                                         | After clicking the login, if the user doesn't exist, a pop up dialog will appear letting the user know that the username doesn't exist in the database and will prompt the user to go register. If the user and password exists and matches the records in the database, the application should move to the Home Screen.                                                                                                                                                          |
-| Integration Testing | Login and Registration      | 1. Run VocabAppMain.py file <br />2. Click the Register button on the application screen<br /> 3. Input the appropriate information in each textfield following the hint text <br />4. Click Register <br />5. Try login with the same credentials registered                                 | If the user followed the on screen instructions properly and registered for a user, then the user should be able to login with the same credentials that were just registered with.                                                                                                                                                                                                                                                                                               |
-| Unit Testing        | Search Book           | 1. Run VocabAppMain.py file <br />2. Login with previously registered credentials <br />3. Click "Manage Vocab" on the home screen <br />4. Input into the appropriate fields                                                                                                                | If the fields are inputted correctly and the program didn't find the same vocabulary in the database, the user will be redirected back to the Manage Vocab screen and a pop up dialog will indicate to the user that a vocabulary is added to the database. The user would be able to confirm this by seeing if the entry shows up on the table.                                                                                                                                  |
-| Unit Testing        | Add Book         | 1. Run VocabAppMain.py file <br />2. Login with previously registered credentials <br />3. Click "Manage Vocab" on the home screen <br />4. Click the checkbox next to one of the rows <br />5. Click "Delete Vocab" on the bottom bar                                                       | If more than one row is selected, the application will show a popup dialog saying that only one row can be selected. If only one row is checked, the row will be deleted and a pop up dialog should indicate that the vocabulary was deleted successfully. The user would be able to confirm this by seeing if the entry disappeared on the table.                                                                                                                                 |
+| Unit Testing        | Login                  | 1. Run main.py file <br />2. Input the wrong information in each textfield. Click Login                                                                                                                                                         | After clicking the login, if the pair of email and password didn't exist in the database show an error message, other wise the user will go to home screen.|
+| Unit Testing        | Search Book            | 1. Run main.py file <br />2. Login and go to home screen. Some books must be stored in the data base at this point.<br />3. Enter something that exist in the database into the author text field. Leave the other blank. Click search.                                                                                                          | If the table shows all item that includes have the same author.|
+| Unit Testing        | Add Book               | 1. Run main.py file <br />2. Login with previously registered credentials <br />3. From Home screen go to Add screen. Put input on some text field. click update. Go to Home screen from Home button.| if the home screen table shows the added book.
+| Unit Testing        | delete Book               | 1. Run main.py file <br />2. Login with previously registered credentials <br />3. From Home screen go to edit screen check multiple rows to delete. click delete. Go to Home| if the home screen table stop showing shows the deleted book.
+| Unit Testing        | Edit history               | 1. Run main.py file <br />2. Login with previously registered credentials <br />3. Make sure you have done adding and deleting before. From Home screen go to edit screen go to show history.| if the table show the past action you made.
 
 # Criteria C: Development
 
@@ -196,6 +191,12 @@ class database_handler:
         self.run_query(query)
         self.close()
 
+    def insert_3(self,email,title,action,id):
+        date = datetime.datetime.now()
+        query = f'INSERT INTO history(email,title,action,id,date) values ("{email}","{title}","{action}","{id}","{date}")'
+        self.run_query(query)
+        self.close()
+
     def run_query(self,query:str):
         self.cursor.execute(query)
         self.connection.commit()
@@ -223,7 +224,8 @@ class LoginScreen(MDScreen):
         db = database_handler("BookApp.db")
         email = self.ids.email.text
         passwd = self.ids.passwd.text
-        query = f"SELECT * from users where email = '{email}' and password = '{passwd}'"
+        print(hash(passwd))
+        query = f"SELECT * from users where email = '{email}' and password = '{hash(passwd)}'"
         a = db.search(query)
         print(a)
         if len(a) > 0:
@@ -286,10 +288,10 @@ class SignupScreen(MDScreen):
             message = 'Please enter email and password'
 
         elif len(a) > 0:
-            message = 'This email adress is already been used'
+            message = 'This email address is already been used'
 
         elif self.password_require(passwd) == 'invalid':
-            message = 'The passsword should be more than 8 character with number and uppercase letter in it'
+            message = 'The password should be more than 8 character with number and uppercase letter in it'
 
         elif passwd != passwd_confirm:
             message = 'Password does not match'
@@ -300,11 +302,11 @@ class SignupScreen(MDScreen):
             message = ''
         else:
             db = database_handler('BookApp.db')
-            db.insert_1(email,passwd)
+            db.insert_1(email,hash(passwd))
             HomeScreen.email = email
 
             self.parent.current = 'HomeScreen'
-            print('register succesful')
+            print('register successful')
 
 
         db.close()
@@ -355,37 +357,55 @@ on_pre_enter function creates a MDDataTable before the Screen is shown . The tab
 
 ##### Add Screen
 In the adding screen user are allowed to add new books in the database 
+The find_last function finds the last books id that was added in the database. 
+The book id will be recorded in history.
 ```.py
 class AddScreen(MDScreen):
+    def find_last(self):
+        print('find last')
+        db = database_handler('BookApp.db')
+        query_id = f"SELECT id from book_info ORDER BY id DESC LIMIT 1;"
+        id = db.search(query_id)
+        print(f'id is {id[0][0]}')
+        db.close()
+        return id[0][0]
     def update(self):
         email = HomeScreen.email
         title = self.ids.title.text
         author = self.ids.author.text
         publisher = self.ids.publisher.text
         location = self.ids.location.text
-        print(email,title,author,publisher)
+        print(f'general info {email,title,author,publisher}')
         db = database_handler('BookApp.db')
         db.insert_2(email, title, author, publisher,location)
+        action = 'Add'
+        id = self.find_last()
+        EditScreen.history(self,email,title,action,id)
+        db.close()
 
 ```
 ##### search screen
 ```.py
 class SearchScreen(MDScreen):
-    def search_list(self):
+        def search_list(self):
         email = HomeScreen.email
         title = self.ids.title.text
         author = self.ids.author.text
-        publisher = self.ids.author.text
+        publisher = self.ids.publisher.text
         location = self.ids.location.text
         search_result = []
         db = database_handler("BookApp.db")
-        query = f"SELECT title,author,publisher,location from book_info where email = '{email}'"
+        query = f"SELECT id,title,author,publisher,location from book_info where email = '{email}'"
         a = db.search(query)
+        print(a)
+        print(f'searched by {title,author,publisher,location}')
         for i in a:
-            if i[0] == title or title == '':
-                if i[1] == author or author == '':
-                    if i[2] == publisher or publisher == '':
-                        if i[3] == location or location == '':
+            print(i)
+            if i[1] == title or title == '':
+                if i[2] == author or author == '':
+                    if i[3] == publisher or publisher == '':
+                        if i[4] == location or location == '':
+                            print('appending')
                             search_result.append(i)
         print(search_result)
         self.show(search_result)
@@ -417,6 +437,16 @@ By adding title == '' in the for loop allows users to leave a empty blank in the
 ##### Edit Screen
 ```.py
 class EditScreen(MDScreen):
+    def history(self,email,title,action,id):
+
+        db = database_handler('BookApp.db')
+
+        print(f'last id is {id}')
+        db.insert_3(email,title,action,id)
+        db.close()
+```
+Add action into history database
+```.py
     def on_pre_enter(self):
         self.data = HomeScreen.get_list(HomeScreen.email)
         # before the screen is created, this code is run
@@ -443,19 +473,29 @@ class EditScreen(MDScreen):
 This function shows the table that was used in the homescreen but with a check box.
 ```.py
     def delete(self):
+
+        # This function deletes the selected rows from the table
         checked_rows = self.data_table.get_row_checks()
+        # delete
+        db = database_handler("BookApp.db")
         for r in checked_rows:
-            title = r[0]
-            author = r[1]
-            publisher = r[2]
-            location = r[3]
-            query = f"DELETE from book_info where title = '{title}' and author = '{author}' and publisher = '{publisher}' and location = '{location}'"
-            db = database_handler("BookApp.db")
+            print(r)
+            id = r[0]
+            query = f"DELETE from book_info where id = '{id}'"
             db.run_query(query)
             print(f'delete{r}')
+            email = HomeScreen.email
+            title = r[1]
+            action = 'Delete'
+            EditScreen.history(self, email, title, action,id)
         db.close()
         self.data = HomeScreen.get_list(HomeScreen.email)
+
+        print(self.data)
+        self.on_pre_enter()
 ```
+This function removes the selected book from the book_info database.
+each delete action will be saved at the history database.
 ##### History Screen
 ```.py
 class HistoryScreen(MDScreen):
@@ -944,18 +984,8 @@ ScreenManager:
 [Click here for the Video](https://drive.google.com/file/d/1ahuo32lU8IKWVdopnoYAEPIMCa0DNHtE/view?usp=sharing)
 
 # Appendix
+![aproval from client](aproval.png)
 
-### First meeting with client
-
-![](Assets/MeetingNotes1.jpg)
-
-**Fig.9** *Rough notes from first meeting with client, includes basic ideas behind client's app*
-
-### Success Criteria Meeting(Second Meeting)
-
-![](Assets/MeetingNotes2.jpg)
-
-**Fig.10** *Rough notes from second meeting with the client, includes details of success criteria*
 
 
 
